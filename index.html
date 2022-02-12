@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>日记</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta name="description" content="Description">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+	<link rel="stylesheet" href="//unpkg.com/docsify@4/lib/themes/vue.css">
+  <link rel="stylesheet" href="//unpkg.com/katex@0.10.0/dist/katex.min.css">
+  <script defer src="//unpkg.com/katex@0.10.0/dist/katex.min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <style>
+    :root {
+      --docsifytabs-border-color: #ededed;
+      --docsifytabs-tab-highlight-color: #42b983;
+    }
+  </style>
+</head>
+
+<body>
+	<div id="app"></div>
+	<script>
+		window.$docsify = {
+      name: '日记',
+      repo: '',
+      relativePath: true,
+      coverpage: true,
+      loadNavbar: true,
+      onlyCover: false,
+      markdown: {
+        renderer: {
+          code: function(code, lang) {
+            if (lang === "dot") {
+              return (
+                '<div class="viz">'+ Viz(code, "SVG")+'</div>'
+              );
+            }
+            if (lang === "tex") {
+              return (
+                '<span class="tex">'+ katex.renderToString(code, {
+                    throwOnError: false
+                })+'</span>'
+              );
+            }
+            return this.origin.code.apply(this, arguments);
+          }
+        }
+      },
+      plugins: [
+        function(hook, vm) {
+            hook.doneEach(function() {
+              var onlineMusic = document.querySelector("#onlineMusic");
+
+              var image = new Image();
+              image.src = "//youtube.com/favicon.ico";
+              if (onlineMusic == null) {
+                return ;
+              }
+
+              var timestamp = new Date().getTime();
+              var loadFunction = setInterval(function() {
+                if (image.complete) {
+                  onlineMusic.setAttribute("src", "//www.youtube.com/embed/5qap5aO4i9A");
+                  clearInterval(loadFunction);
+                } else {
+                  var currentTimestamp = new Date().getTime();
+                  if (currentTimestamp - timestamp >= 5000) {
+                    onlineMusic.setAttribute("src", "//player.bilibili.com/player.html?aid=285319271&bvid=BV13f4y1S7zq&cid=178189768&page=1");
+                    image.src="";
+                    clearInterval(loadFunction);
+                  }
+                }
+              }, 100);
+            });
+        },
+        function(hook, vm) {
+          hook.afterEach(function(html, next)  {
+            var newHtml = '<div id="vcomments"></div>';
+
+            next(html + newHtml);
+          });
+          hook.doneEach(function() {
+            var currentPageRoute = "/easul" + vm.route.path;
+            var readCounterHTML =  
+              '<span id="' + currentPageRoute + '" class="leancloud_visitors" data-flag-title="' + currentPageRoute + ' ">'
+              + '<em class="post-meta-item-text" style="font-style: normal;">当前页访问次数: </em>'
+              + '<i class="leancloud-visitors-count" style="font-style: normal;color: #7f8c8d;"></i>'
+              + '</span>'
+            var readCounterDiv = document.createElement("div");
+            readCounterDiv.style.paddingBottom = "2em";
+            readCounterDiv.innerHTML = readCounterHTML;
+            document.querySelector(".markdown-section").prepend(readCounterDiv);
+
+            new Valine({
+                el: '#vcomments',
+                appId: 'eDh3HdWa5hfbaKHvXdW0CbiP-MdYXbMMI',
+                appKey: 'kzB7z1dJjn0DP9m6y8oXSpy1',
+                placeholder: '快来留下你的评论吧 !',
+                path: currentPageRoute,
+                visitor: true,
+                requiredFields: ['nick','mail'],
+                avatar: "robohash",
+                serverURLs: "https://edh3hdwa.api.lncldglobal.com"
+            });
+          });
+        }
+      ],
+      tabs: {
+        persist    : true,      // default
+        sync       : true,      // default
+        theme      : 'classic', // default
+        tabComments: true,      // default
+        tabHeadings: true       // default
+      }
+    }
+	</script>
+	<!-- Docsify v4 -->
+	<script src="//unpkg.com/docsify@4"></script>
+	<script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
+  <script src="//unpkg.com/docsify-tabs@1"></script>
+	<script src="//unpkg.com/prismjs@1.21.0/components/prism-java.min.js"></script>
+	<script src="//unpkg.com/prismjs@1.22.0/components/prism-json.min.js"></script>
+	<script src="//unpkg.com/prismjs@1.22.0/components/prism-xml-doc.min.js"></script>
+	<script src="//unpkg.com/prismjs@1.22.0/components/prism-css.min.js"></script>
+	<script src="//unpkg.com/prismjs@1.22.0/components/prism-javascript.min.js"></script>
+	<script src="//unpkg.com/prismjs@1.22.0/components/prism-bash.min.js"></script>
+	<script src="//unpkg.com/prismjs@1.22.0/components/prism-python.min.js"></script>
+	<script src="//unpkg.com/prismjs@1.22.0/components/prism-yaml.min.js"></script>
+	<script src="//unpkg.com/prismjs@1.22.0/components/prism-properties.min.js"></script>
+	<script src="//unpkg.com/prismjs@1.22.0/components/prism-csharp.min.js"></script>
+	<script src="//unpkg.com/docsify-copy-code"></script>
+  <script src="//unpkg.com/viz.js@1.8.0/viz.js"></script>
+  <!--将cdn.jsdelivr.net/npm/换成unpkg.com-->
+</body>
+
+</html>
